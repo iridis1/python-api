@@ -81,7 +81,7 @@ def assert_valid_vacancy(vacancy: dict):
     assert vacancy["Salary"] == "€ %s tot € %s" % (int(vacancy["MinSalary"]), int(vacancy["MaxSalary"]))
     assert vacancy["SalaryPeriod"] == "MONTH"
     assert len(re.findall("ervaring|niveau", vacancy["YourProfile"])) > 0
-    assert "Heerlen" in vacancy["WorkLocation"] or "Den Haag" in vacancy["WorkLocation"]
+    assert "Heerlen" or "Den Haag" in vacancy["WorkLocation"]
     assert parse(vacancy["PublicationDate"]).year <= datetime.date.today().year
 
 
