@@ -1,5 +1,4 @@
 import datetime
-import re
 
 import requests
 from dateutil.parser import parse
@@ -88,6 +87,6 @@ def assert_valid_vacancy(vacancy: dict):
     assert vacancy["MaxSalary"] < 9999
     assert vacancy["Salary"] == "€ %s tot € %s" % (int(vacancy["MinSalary"]), int(vacancy["MaxSalary"]))
     assert vacancy["SalaryPeriod"] == "MONTH"
-    assert len(re.findall("ervaring|niveau", vacancy["YourProfile"])) > 0
+    assert "ervaring" or "niveau" in vacancy["YourProfile"]
     assert "Heerlen" or "Den Haag" in vacancy["WorkLocation"]
     assert parse(vacancy["PublicationDate"]).year <= datetime.date.today().year
