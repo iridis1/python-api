@@ -1,7 +1,7 @@
 import datetime
+import re
 
 import requests
-import re
 from dateutil.parser import parse
 
 baseUrl = "https://www.cbs.nl/odata/v1"
@@ -39,6 +39,19 @@ def test_get_skipped_vacancies_should_return_all_but_skipped_vacancies():
     assert len(vacancies_excluding_skipped) == len(vacancies_including_skipped) - skipped_vacancies
     assert vacancies_excluding_skipped[0] == vacancies_including_skipped[skipped_vacancies]
     assert vacancies_excluding_skipped[-1] == vacancies_including_skipped[-1]  # Last vacancy
+
+
+def test_get_vacancy_by_id_should_return_specified_vacancy():
+    response_all = requests.get(baseUrl + "/Vacancies")
+    unique_id = response_all.json()["value"][0]["UniqueId"]
+    print(response_all.json())
+    response = requests.get(baseUrl + "/Vacancies('%s')" % unique_id)
+    assert_valid_odata_response(response)
+
+    vacancy = response.json()
+    assert vacancy["UniqueId"] == unique_id
+    assert vacancy["Title"] == response_all.json()["value"][0]["Title"]
+    assert_valid_vacancy(vacancy)
 
 
 def test_get_nonexistent_vacancy_should_return_not_found():
