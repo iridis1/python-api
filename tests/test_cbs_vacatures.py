@@ -66,14 +66,22 @@ def test_delete_vacancy_should_return_method_not_allowed():
     assert response.status_code == 405
 
 
+def assert_valid_odata_response(response):
+    assert response.status_code == 200
+    assert "application/json" in response.headers["content-type"]
+    assert "charset=utf-8" in response.headers["content-type"]
+    assert response.headers["odata-version"] == "4.0"
+    assert response.json()["@odata.context"].find(baseUrl + "/$metadata#Vacancies") == 0
+
+
 def assert_valid_vacancies(vacancies: list):
     for vacancy in vacancies:
         assert_valid_vacancy(vacancy)
 
 
 def assert_valid_vacancy(vacancy: dict):
-    assert len(vacancy["UniqueId"]) == 42 # <UUID>-nl-nl
-    assert len(vacancy["Title"]) > 5 # Jurist
+    assert len(vacancy["UniqueId"]) == 42  # <UUID>-nl-nl
+    assert len(vacancy["Title"]) > 5  # Jurist
     assert vacancy["MinSalary"] > 500
     assert vacancy["MinSalary"] < 9999
     assert vacancy["MaxSalary"] >= vacancy["MinSalary"]
@@ -83,11 +91,3 @@ def assert_valid_vacancy(vacancy: dict):
     assert len(re.findall("ervaring|niveau", vacancy["YourProfile"])) > 0
     assert "Heerlen" or "Den Haag" in vacancy["WorkLocation"]
     assert parse(vacancy["PublicationDate"]).year <= datetime.date.today().year
-
-
-def assert_valid_odata_response(response):
-    assert response.status_code == 200
-    assert "application/json" in response.headers["content-type"]
-    assert "charset=utf-8" in response.headers["content-type"]
-    assert response.headers["odata-version"] == "4.0"
-    assert response.json()["@odata.context"].find(baseUrl + "/$metadata#Vacancies") == 0
