@@ -66,12 +66,12 @@ def test_delete_vacancy_should_return_method_not_allowed():
     assert response.status_code == 405
 
 
-def assert_valid_vacancies(vacancies):
+def assert_valid_vacancies(vacancies: list):
     for vacancy in vacancies:
         assert_valid_vacancy(vacancy)
 
 
-def assert_valid_vacancy(vacancy):
+def assert_valid_vacancy(vacancy: dict):
     assert len(vacancy["UniqueId"]) == 42  # <UUID>-nl-nl
     assert len(vacancy["Title"]) > 5
     assert vacancy["MinSalary"] > 500
