@@ -72,8 +72,8 @@ def assert_valid_vacancies(vacancies: list):
 
 
 def assert_valid_vacancy(vacancy: dict):
-    assert len(vacancy["UniqueId"]) == 42  # <UUID>-nl-nl
-    assert len(vacancy["Title"]) > 5
+    assert len(vacancy["UniqueId"]) == 42 # <UUID>-nl-nl
+    assert len(vacancy["Title"]) > 5 # Jurist
     assert vacancy["MinSalary"] > 500
     assert vacancy["MinSalary"] < 9999
     assert vacancy["MaxSalary"] >= vacancy["MinSalary"]
