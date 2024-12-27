@@ -3,11 +3,11 @@ import datetime
 import requests
 from dateutil.parser import parse
 
-baseUrl = "https://www.cbs.nl/odata/v1"
+BASE_URL = "https://www.cbs.nl/odata/v1"
 
 
 def test_get_vacancies_should_return_vacancies():
-    response = requests.get(baseUrl + "/Vacancies")
+    response = requests.get(BASE_URL + "/Vacancies")
     assert_valid_odata_response(response)
 
     vacancies = response.json()["value"]
@@ -17,7 +17,7 @@ def test_get_vacancies_should_return_vacancies():
 
 def test_get_top_vacancies_should_return_number_of_specified_vacancies():
     number_of_vacancies = 2
-    response = requests.get(baseUrl + "/Vacancies?$top=%s" % number_of_vacancies)
+    response = requests.get(BASE_URL + "/Vacancies?$top=%s" % number_of_vacancies)
     assert_valid_odata_response(response)
 
     vacancies = response.json()["value"]
@@ -27,8 +27,8 @@ def test_get_top_vacancies_should_return_number_of_specified_vacancies():
 
 def test_get_skipped_vacancies_should_return_all_but_skipped_vacancies():
     skipped_vacancies = 2
-    response_including_skipped = requests.get(baseUrl + "/Vacancies")
-    response_excluding_skipped = requests.get(baseUrl + "/Vacancies?$skip=%s" % skipped_vacancies)
+    response_including_skipped = requests.get(BASE_URL + "/Vacancies")
+    response_excluding_skipped = requests.get(BASE_URL + "/Vacancies?$skip=%s" % skipped_vacancies)
     assert_valid_odata_response(response_excluding_skipped)
 
     vacancies_including_skipped = response_including_skipped.json()["value"]
@@ -41,10 +41,10 @@ def test_get_skipped_vacancies_should_return_all_but_skipped_vacancies():
 
 
 def test_get_vacancy_by_id_should_return_specified_vacancy():
-    response_all = requests.get(baseUrl + "/Vacancies")
+    response_all = requests.get(BASE_URL + "/Vacancies")
     unique_id = response_all.json()["value"][0]["UniqueId"]
     print(response_all.json())
-    response = requests.get(baseUrl + "/Vacancies('%s')" % unique_id)
+    response = requests.get(BASE_URL + "/Vacancies('%s')" % unique_id)
     assert_valid_odata_response(response)
 
     vacancy = response.json()
@@ -55,13 +55,13 @@ def test_get_vacancy_by_id_should_return_specified_vacancy():
 
 def test_get_nonexistent_vacancy_should_return_not_found():
     nonexistent_id = "00000000-0000-0000-0000-000000000000-nl-nl"
-    response = requests.get(baseUrl + "/Vacancies('$%s')" % nonexistent_id)
+    response = requests.get(BASE_URL + "/Vacancies('$%s')" % nonexistent_id)
     assert response.status_code == 204
 
 
 def test_delete_vacancy_should_return_method_not_allowed():
     nonexistent_id = "00000000-0000-0000-0000-000000000000-nl-nl"
-    response = requests.delete(baseUrl + "/Vacancies('$%s')" % nonexistent_id)
+    response = requests.delete(BASE_URL + "/Vacancies('$%s')" % nonexistent_id)
     assert response.status_code == 405
 
 
@@ -70,7 +70,7 @@ def assert_valid_odata_response(response):
     assert "application/json" in response.headers["content-type"]
     assert "charset=utf-8" in response.headers["content-type"]
     assert response.headers["odata-version"] == "4.0"
-    assert response.json()["@odata.context"].find(baseUrl + "/$metadata#Vacancies") == 0
+    assert response.json()["@odata.context"].find(BASE_URL + "/$metadata#Vacancies") == 0
 
 
 def assert_valid_vacancies(vacancies: list):
